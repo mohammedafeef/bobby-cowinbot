@@ -1,0 +1,28 @@
+{
+  "name": "bobby-cowin",
+  "version": "1.0.1",
+  "description": "discord bot for covid vaction updation",
+  "main": "bot.js",
+  "scripts": {
+    "test": "nodemon ./src/bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MOHAMMEDAFEEF/bobby-cowinbot.git"
+  },
+  "keywords": [
+    "bot"
+  ],
+  "author": "codinghomos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MOHAMMEDAFEEF/bobby-cowinbot/issues"
+  },
+  "homepage": "https://github.com/MOHAMMEDAFEEF/bobby-cowinbot#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^12.5.3",
+    "dotenv": "^9.0.2",
+    "nodemon": "^2.0.7"
+  }
+}
