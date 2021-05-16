@@ -4,7 +4,8 @@
   "description": "discord bot for covid vaction updation",
   "main": "bot.js",
   "scripts": {
-    "test": "nodemon ./src/bot.js"
+    "dev":"nodemon ./src/bot.js",
+    "start":"node ./src/bot.js"
   },
   "repository": {
     "type": "git",
