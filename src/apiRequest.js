@@ -18,9 +18,9 @@ const getStates = async ()=>{
 
 
 //To get list of districts
-const getDistricts = async ()=>{
+const getDistricts = async (stateid=17)=>{
     try {
-        const res = await axios.get('/v2/admin/location/districts/17');
+        const res = await axios.get(`/v2/admin/location/districts/${stateid}`);
         //sending back the res data
         return(res.data);
 
@@ -145,5 +145,26 @@ const getSessionByCentre7 = async (centerid = 1235,date = '16-05-2021')=>{
     }
 };
 
-getSessionByCentre7(8785,'18-05-2021')
-.then(data=>console.log(data))
+module.exports = {
+    getStates, 
+    getDistricts, 
+    getSessionByPin, 
+    getSessionByDistrict, 
+    getCentersByLat, 
+    getSessionByPin7, 
+    getSessionByDistrict7, 
+    getSessionByCentre7
+}
+
+// module.exports.getStates = getStates;
+// module.exports.getDistricts = getDistricts;
+// module.exports.getSessionByPin = getSessionByPin;
+// module.exports.getSessionByDistrict = getSessionByDistrict;
+// module.exports.getCentersByLat = getCentersByLat;
+// module.exports.getSessionByPin7 = getSessionByPin7;
+// module.exports.getSessionByDistrict7 = getSessionByDistrict7;
+// module.exports.getSessionByCentre7 = getSessionByCentre7;
+
+
+//getDistricts(16)
+//.then(data=>console.log(data))
