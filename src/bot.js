@@ -13,6 +13,8 @@ const { districtId } = require('./districtId');
 //     "malappuram":152,
 //     "kozhikode":150
 // }
+//cowin api request handler module
+const cowinApi = require('./apiRequest');
 //command prefix
 const PREFIX = '$';
 botMentionId = '<@!843371650959409202> ';
@@ -34,7 +36,7 @@ client.on('message',(message)=>{
             (data)=>{
                 console.log(data);
                 if(data){
-                    message.channel.send(`hai watsup @${data.name}`);
+                    message.channel.send(`hai watsup <@${data.user_id}>`);
                 }else{
                     message.channel.send("Hai ,please do set your credentials\nby typing the **$set** command")
                 }
@@ -79,6 +81,13 @@ client.on('message',(message)=>{
                 if(data){
                     message.channel
                     .send(`checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                    const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
+                    const date = new Date();
+                    date = `${date.getday()}-${date.getMonth()}-${date.getYear()}`;
+                    cowinApi.getSessionByDistrict(distId,date)
+                    .then((data)=>{
+                        console.log(data);
+                    })
                 }else{
                     message.channel.send('Hai ,please do set your credentials\nby typing the **$set** command');
                 }
