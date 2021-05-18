@@ -75,18 +75,35 @@ client.on('message',(message)=>{
             }else{
                 message.channel.send('invalid age');
             }
-        }else if (CMD_NAME === 'checkslots'){
+        }else if (CMD_NAME === 'check_slot'){
             user.findUser(message.author.id)
             .then((data)=>{
                 if(data){
                     message.channel
-                    .send(`checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                    .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
                     const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
-                    const date = new Date();
-                    date = `${date.getday()}-${date.getMonth()}-${date.getYear()}`;
-                    cowinApi.getSessionByDistrict(distId,date)
+                    let date = new Date();
+                    date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
+                    console.log(distId,date,"\n");
+                    cowinApi.getSessionByDistrict(distId.district_id,date)
                     .then((data)=>{
-                        console.log(data);
+                        // console.log(data);
+                        if(!data.sessions.length){
+                            message.channel.send('there are some slots :smiley:\n')
+                            const exampleEmbed = new Discord.MessageEmbed()
+                            .setColor('#FFFFFF')
+                            .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
+                            .setTitle('Register for Vacination')
+                            .setURL('https://selfregistration.cowin.gov.in/')
+                            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
+                            .setTimestamp()
+                            .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+
+                            message.channel.send(exampleEmbed);  
+                        }else{
+                            message.channel.send('currently there are no slots :cry: check later')
+
+                        }
                     })
                 }else{
                     message.channel.send('Hai ,please do set your credentials\nby typing the **$set** command');

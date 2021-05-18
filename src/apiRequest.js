@@ -61,14 +61,15 @@ const getSessionByDistrict = async (districtid = 304,date = '16-05-2021')=>{
           }
         });
         //sending back the res data
-        return(JSON.parse(res.data));
+        return(res.data);
 
     } catch (err){
 
         console.log(err);
     }
 };
-
+// getSessionByDistrict(302,'18-5-2021').then((data)=>console.log(data));
+// getDistricts().then((data)=>console.log(data));
 //To get vaccination centers by latitude and longitude
 const getCentersByLat = async (lat=28.72,long=77.14)=>{
     try {
@@ -89,7 +90,7 @@ const getCentersByLat = async (lat=28.72,long=77.14)=>{
 };
 
 //To get vaccination session by pincode for 7 days
-const getSessionByPin7 = async (pincode = 110001,date = '16-05-2021')=>{
+const getSessionByPinForWeek = async (pincode = 110001,date = '16-05-2021')=>{
     try {
         const res = await axios.get('/v2/appointment/sessions/public/calendarByPin',
         {                                  
@@ -108,7 +109,7 @@ const getSessionByPin7 = async (pincode = 110001,date = '16-05-2021')=>{
 };
 
 //To get vaccination session by district for 7 days
-const getSessionByDistrict7 = async (districtid = 305,date = '16-05-2021')=>{
+const getSessionByDistrictForWeek= async (districtid = 305,date = '16-05-2021')=>{
     try {
         const res = await axios.get('/v2/appointment/sessions/public/calendarByDistrict',
         {
@@ -127,7 +128,7 @@ const getSessionByDistrict7 = async (districtid = 305,date = '16-05-2021')=>{
 };
 
 //To get vaccination session by center for 7 days
-const getSessionByCentre7 = async (centerid = 1235,date = '16-05-2021')=>{
+const getSessionByCentreForWeek = async (centerid = 1235,date = '16-05-2021')=>{
     try {
         const res = await axios.get('/v2/appointment/sessions/public/calendarByCenter',
         {
@@ -151,9 +152,9 @@ module.exports = {
     getSessionByPin, 
     getSessionByDistrict, 
     getCentersByLat, 
-    getSessionByPin7, 
-    getSessionByDistrict7, 
-    getSessionByCentre7
+    getSessionByPinForWeek, 
+    getSessionByDistrictForWeek, 
+    getSessionByCentreForWeek
 }
 
 // module.exports.getStates = getStates;
