@@ -7,10 +7,12 @@ const client = new Discord.Client();
 //importing the database methods
 const user = require('./Channels');
 
-const districtId = {
-    "malappuram":152,
-    "kozhikode":150
-}
+//importing meta data of districts 
+const { districtId } = require('./districtId');
+// const districtId = {
+//     "malappuram":152,
+//     "kozhikode":150
+// }
 //command prefix
 const PREFIX = '$';
 botMentionId = '<@!843371650959409202> ';
@@ -26,15 +28,20 @@ client.on('ready',()=>{
 client.on('message',(message)=>{
     //return if the message from the bot it self
     if(message.author.bot)return;
+    //check for bot mentioned message
     if(message.mentions.has(client.user.id)){
-        const userData = user.findUser(message.author.id);
-        console.log(userData);
-        if(userData){
-            message.channel.send(`hai watsup @${userData.name}`);
-        }else{
-            message.channel.send("Hai ,please do set your credentials\nby typing the **$set** command")
-        }
+        user.findUser(message.author.id).then(
+            (data)=>{
+                console.log(data);
+                if(data){
+                    message.channel.send(`hai watsup @${data.name}`);
+                }else{
+                    message.channel.send("Hai ,please do set your credentials\nby typing the **$set** command")
+                }
+            }
+        );
     }
+    //handling the hello and the hai message
     if(['hai','hello'].includes(message.content.toLowerCase())){
         console.log(`[${message.author}]${message.content}`)
         message.channel.send(
@@ -52,59 +59,93 @@ client.on('message',(message)=>{
             message.channel.send(`:mobile_phone: **commands**\n\n\t:loudspeaker:  ${PREFIX}district : To set the district \n\t:loudspeaker:  ${PREFIX}age : To set the age\n\n must use **${PREFIX}** as command prefix\n`)
 
         }else if(CMD_NAME === 'district'){
-            if(districtId.hasOwnProperty(args[0].toLowerCase())){
-                message.channel.send('district has been setted');
+            if(districtId.filter((dist)=>dist.district_name.toLowerCase() === args[0].toLowerCase())){
+                user.updateUser(message.author.id,{district:args[0]});
+                message.channel.send('district is updated');
             }else{
                 message.channel.send('please, check the district name and correct it');
             }
         }else if(CMD_NAME === 'age'){
             let age = parseInt(args[0]);
-            if(!isNaN()){
-                if(age < 18){
-                    message.channel.send('your not grown much to vaccinate')
-                }else if(age >45){
-                    message.channel.send("age has been setted");
-                }else{
-                    message.channel.send('age has been setted');
-                }
+            if(!isNaN(age)){
+                user.updateUser(message.author.id,{age:age});
+                message.channel.send('age is updated');
             }else{
-                message.channel.send('enter an valid age')
+                message.channel.send('invalid age');
             }
         }else if (CMD_NAME === 'checkslots'){
-            console.log(message.channel.id);
-            message.channel.send(message.channel.id);
-            message.channel.send('Checking for the slot in the given district');
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(data){
+                    message.channel
+                    .send(`checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                }else{
+                    message.channel.send('Hai ,please do set your credentials\nby typing the **$set** command');
+                }
+            })
+            // message.channel.send(message.channel.id);
+            // message.channel.send('Checking for the slot in the given district');
         }else if (CMD_NAME === 'pincode'){
-            let pincode = Number(args[0]);
+            let pincode = parseInt(args[0]);
             if(!isNaN(pincode)){
+                user.updateUser(message.author.id,{pincode:pincode});
                 message.channel.send('pincode is setted');
             }else{
                 message.channel.send('enter valid pincode');
             }
         }else if(CMD_NAME === 'set'){
-            if(user.findUser(message.author.id)){
-                message.channel.send('your already added check**$help** to modify them')
-            }else{
-                let filter = m => m.author.id === message.author.id;
-                message.channel.send('Do send your pincode,district and age in following format\n ** pincode district age ** \n like 676306 malappuram 20');
-                let isCreated = false;
-                while(isCreated){
-                    message.channel.awaitMessages(filter,{
-                        max:1,
-                        time:30000,
-                        errors: ['time']
-                    })
-                    .then(Response =>{
-                        const [...data] = Response
-                        .trim()
-                        .split(/\s+/);
-                        
-                    })
-                    .catch(err => {
-                        message.channel.send("enter valid data in ** pincode district age ** format");
-                    })
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(data){
+                    message.channel.send('your already added check **$help** to modify them')
+                }else{
+                    let filter = m => m.author.id === message.author.id;
+                    message.channel.send('Do send your pincode,district and age in following format\n ** pincode district age ** \n like 676306 malappuram 20');
+                    let isCreated = false;
+                    // while(!isCreated){
+                        console.log('entered to the loop');
+                        message.channel.awaitMessages(filter,{
+                            max:1,
+                            time:200000,
+                            errors: ['time']
+                        })
+                        .then(res =>{
+                            res = res.first().content;
+                            console.log('replied:',res);
+                            const [pincode,district,age] = res
+                            .toLowerCase()
+                            .trim()
+                            .split(/\s+/);
+                            //checking the rules in the 
+                            if(!isNaN(pincode) 
+                            && !isNaN(age) 
+                            && districtId.filter((dist)=>dist.district_name.toLowerCase() === district.toLowerCase())
+                            && age>0
+                            && age<100
+                            ){
+                                let userData = {
+                                    user_id:message.author.id,
+                                    name:message.author.username,
+                                    district:district,
+                                    age:parseInt(age),
+                                    pincode:parseInt(pincode)
+                                }
+                                user.insertUser(userData);
+                                message.channel.send(':space_invader: your data saved check **$help** for checking the :slots');
+                                iscreated = true;
+                            }else{
+                                message.channel.send('invalid data try again with **$set** command');
+                            }
+                            
+                            
+                        })
+                        .catch(err => {
+                            message.channel.send("invalid data try again with **$set** command");
+                        })
+                    // }
                 }
             }
+            )
         }
     }
 });
