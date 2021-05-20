@@ -16,6 +16,8 @@ const { checkAvailability } = require('./notifyScript');
 //     "malappuram":152,
 //     "kozhikode":150
 // }
+
+const cronJob = require('cron').CronJob;
 //cowin api request handler module
 const cowinApi = require('./apiRequest');
 //command prefix
@@ -28,16 +30,32 @@ client.on('ready',()=>{
     // .then(channel =>{
     //     channel.send( `:stop_sign: Enter **${PREFIX}help** to get all the commands :stop_sign:`);
     // })
-    let notificationId = setInterval(()=>{
+    // structure to run fun in every hour 0 * * * *
+
+    let notifyJob = new cronJob('0 * * * *',()=>{
+        console.log("i am here with you");
         checkAvailability();
-    },60*60*60*1000);
+    })
+    notifyJob.start();
 })
 
 //for sending welcoming message to new users
 client.on('guildMemberAdd',member =>{
-    console.log(member);
-    member.send("hai :smiley:,welcome to the server \n type **$help** for more details");
+    console.log(member.id);
+    member.send("hai :smiley:,welcome to the server \n type **$help** to more about me");
+    let userData = {
+        user_id:message.author.id,
+        name:message.author.username
+    }
+    user.insertUser(userData);
+
 });
+
+//event to fire when the user is removed
+client.on('guildMemberRemove',member=>{
+    console.log(member.user.username);
+    user.deletUser(member.user.id);
+})
 // setting responses for messages from the client
 client.on('message',(message)=>{
     //return if the message from the bot it self
@@ -79,7 +97,7 @@ client.on('message',(message)=>{
                     user.updateUser(message.author.id,{district:args[0]});
                     message.channel.send('district is updated');
                 }else{
-                    message.channel.send('please, check the district name and correct it');
+                    message.channel.send('Please, check the district name and correct it');
                 }
             }else{
                 message.channel.send('Enter district after the **$district**');
@@ -90,9 +108,9 @@ client.on('message',(message)=>{
             if(args.length){
                 if(!isNaN(age)){
                     user.updateUser(message.author.id,{age:age});
-                    message.channel.send('age is updated');
+                    message.channel.send('Age is updated');
                 }else{
-                    message.channel.send('invalid age');
+                    message.channel.send('Invalid age');
                 }
             }else{
                 message.channel.send('Enter age after the **$age**')
@@ -103,7 +121,7 @@ client.on('message',(message)=>{
             .then((data)=>{
                 if(data){
                     message.channel
-                    .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                    .send(`<@${data.user_id}>:satellite: checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
                     // const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
                     // let date = new Date();
                     // date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
@@ -117,7 +135,7 @@ client.on('message',(message)=>{
                             console.log(data.sessions);
                             let centers = '';
                             data.sessions.forEach(center => {
-                                centers = centers.concat(`${center.available_capacity} in ${center.name} (${center.pincode}) for ${center.min_age_limit}+ \n`);
+                                centers = centers.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${center.available_capacity}**\n`);
                             });
                             message.channel.send(centers);
                             const exampleEmbed = new Discord.MessageEmbed()
@@ -131,7 +149,7 @@ client.on('message',(message)=>{
 
                             message.channel.send(exampleEmbed);  
                         }else{
-                            message.channel.send('currently there are no slots :cry: check later')
+                            message.channel.send('Currently there are no :syringe:slots :cry:')
 
                         }
                     })
@@ -200,10 +218,10 @@ client.on('message',(message)=>{
                 message.channel.send('enter the pincode after **$pincode**')
             }
 
-        }else if(CMD_NAME === 'set'){
+        }else if(CMD_NAME === 'set_all'){
             user.findUser(message.author.id)
             .then((data)=>{
-                if(data){
+                if(data.district && data.pincode && data.age){
                     message.channel.send('your already added check **$help** to modify them')
                 }else{
                     let filter = m => m.author.id === message.author.id;
@@ -230,14 +248,20 @@ client.on('message',(message)=>{
                             && age>0
                             && age<100
                             ){
-                                let userData = {
-                                    user_id:message.author.id,
-                                    name:message.author.username,
-                                    district:district,
+                                // let userData = {
+                                //     user_id:message.author.id,
+                                //     name:message.author.username,
+                                //     district:district,
+                                //     age:parseInt(age),
+                                //     pincode:parseInt(pincode)
+                                // }
+                                // user.insertUser(userData);
+                                let details = {
                                     age:parseInt(age),
-                                    pincode:parseInt(pincode)
+                                    pincode:parseInt(pincode),
+                                    district:district
                                 }
-                                user.insertUser(userData);
+                                Channel.updateUser(message.author.id,details);
                                 message.channel.send(':space_invader: your data saved check **$help** for checking the :slots');
                                 iscreated = true;
                             }else{

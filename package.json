@@ -22,6 +22,7 @@
   "homepage": "https://github.com/MOHAMMEDAFEEF/bobby-cowinbot#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "cron": "^1.8.2",
     "discord.js": "^12.5.3",
     "dotenv": "^9.0.2",
     "mongodb": "^3.6.6",

@@ -56,6 +56,14 @@ const insertUser = (data)=>{
         err?console.log(err):console.log('inserted');
     });
 }
+//to delete a document
+const deletUser = (userId)=>{
+    Channel.deleteOne({
+        user_id:userId
+    }
+    ,(err)=>console.log(err?err:"deleted")
+    )
+}
 // const user = {
 //     user_id:"124",
 //     name:'azeeb',
@@ -69,5 +77,6 @@ module.exports ={
     insertUser,
     findUser,
     updateUser,
-    findAll
+    findAll,
+    deletUser
 };
