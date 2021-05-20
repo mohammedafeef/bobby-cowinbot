@@ -3,15 +3,14 @@ const axios = require('axios').default;
 axios.defaults.baseURL = 'https://cdn-api.co-vin.in/api'
 axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0'
 
+const {districtId} = require('./districtId');
 //To get list of states
 const getStates = async ()=>{
     try {
         const res = await axios.get('/v2/admin/location/states');
         //sending back the res data
         return(res.data);
-
     } catch (err){
-
         console.log(err);
     }
 };
@@ -23,9 +22,7 @@ const getDistricts = async (stateid=17)=>{
         const res = await axios.get(`/v2/admin/location/districts/${stateid}`);
         //sending back the res data
         return(res.data);
-
     } catch (err){
-
         console.log(err);
     }
 };
@@ -51,22 +48,23 @@ const getSessionByPin = async (pincode = 110001,date = '16-05-2021')=>{
 };
 
 //To get vaccination sessions by district
-const getSessionByDistrict = async (districtid = 304,date = '16-05-2021')=>{
+const getSessionByDistrict = async (districtname)=>{
     try {
-        const res = await axios.get('/v2/appointment/sessions/public/findByDistrict',
+        let date = new Date();
+        date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`
+        const dist = districtId.find(dis=>dis.district_name.toLowerCase() === districtname.toLowerCase());
+        const res = await axios.get(
+        '/v2/appointment/sessions/public/findByDistrict',
         {
          params: {
-              'district_id':`${districtid}`,
+              'district_id':`${dist.district_id}`,
               'date':`${date}`
           }
         });
         //sending back the res data
         return(res.data);
 
-    } catch (err){
-
-        console.log(err);
-    }
+    } catch (err){console.log(err)}
 };
 // getSessionByDistrict(302,'18-5-2021').then((data)=>console.log(data));
 // getDistricts().then((data)=>console.log(data));

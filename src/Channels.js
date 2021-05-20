@@ -1,8 +1,16 @@
 const { Channel } = require('./model.js');
 const mongoose = require('mongoose');
 // creating the connection to mongodb
-mongoose.connect('mongodb://localhost:27017/bobby',{useNewUrlParser: true});
-
+// mongoose.connect('mongodb://localhost:27017/bobby',{useNewUrlParser: true});
+mongoose.connect(
+    'mongodb+srv://bobby:gocorona@cluster0.d3otg.mongodb.net/bobby-cowin?retryWrites=true&w=majority'
+    ,{
+        useNewUrlParser: true,
+        useUnifiedTopology:true
+    }
+    )
+    .then(()=>console.log('successfully logged in '))
+    .catch((err)=>console.log('login failed'));
 //insert an collection
 const updateUser = (id,updatedData)=>{
     Channel.updateOne(
@@ -12,6 +20,19 @@ const updateUser = (id,updatedData)=>{
             console.log((err)?err:`${id} updated`);
         }  
     )
+}
+const findAll = ()=>{
+    return Channel.find({},
+        (err,data)=>{
+            if(err || !data){
+                console.log('failed to get all');
+                return "failed"
+            }
+            console.log('successfully fethched all');
+            return data;
+        }
+        
+        )
 }
 //To find the user data
 const findUser = (id)=>{
@@ -46,5 +67,6 @@ const insertUser = (data)=>{
 module.exports ={
     insertUser,
     findUser,
-    updateUser
+    updateUser,
+    findAll
 };

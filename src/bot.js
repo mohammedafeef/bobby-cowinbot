@@ -9,6 +9,9 @@ const user = require('./Channels');
 
 //importing meta data of districts 
 const { districtId } = require('./districtId');
+
+//importing notify script 
+const { checkAvailability } = require('./notifyScript');
 // const districtId = {
 //     "malappuram":152,
 //     "kozhikode":150
@@ -25,7 +28,16 @@ client.on('ready',()=>{
     // .then(channel =>{
     //     channel.send( `:stop_sign: Enter **${PREFIX}help** to get all the commands :stop_sign:`);
     // })
+    let notificationId = setInterval(()=>{
+        checkAvailability();
+    },60*60*60*1000);
 })
+
+//for sending welcoming message to new users
+client.on('guildMemberAdd',member =>{
+    console.log(member);
+    member.send("hai :smiley:,welcome to the server \n type **$help** for more details");
+});
 // setting responses for messages from the client
 client.on('message',(message)=>{
     //return if the message from the bot it self
@@ -46,6 +58,7 @@ client.on('message',(message)=>{
     //handling the hello and the hai message
     if(['hai','hello'].includes(message.content.toLowerCase())){
         console.log(`[${message.author}]${message.content}`)
+        checkAvailability();
         message.channel.send(
             message.content.toLowerCase() === 'hai'?'hello':'hai'
         );
@@ -61,35 +74,52 @@ client.on('message',(message)=>{
             message.channel.send(`:mobile_phone: **commands**\n\n\t:loudspeaker:  ${PREFIX}district : To set the district \n\t:loudspeaker:  ${PREFIX}age : To set the age\n\n must use **${PREFIX}** as command prefix\n`)
 
         }else if(CMD_NAME === 'district'){
-            if(districtId.filter((dist)=>dist.district_name.toLowerCase() === args[0].toLowerCase())){
-                user.updateUser(message.author.id,{district:args[0]});
-                message.channel.send('district is updated');
+            if(args.length){
+                if(districtId.filter((dist)=>dist.district_name.toLowerCase() === args[0].toLowerCase())){
+                    user.updateUser(message.author.id,{district:args[0]});
+                    message.channel.send('district is updated');
+                }else{
+                    message.channel.send('please, check the district name and correct it');
+                }
             }else{
-                message.channel.send('please, check the district name and correct it');
+                message.channel.send('Enter district after the **$district**');
             }
+
         }else if(CMD_NAME === 'age'){
             let age = parseInt(args[0]);
-            if(!isNaN(age)){
-                user.updateUser(message.author.id,{age:age});
-                message.channel.send('age is updated');
+            if(args.length){
+                if(!isNaN(age)){
+                    user.updateUser(message.author.id,{age:age});
+                    message.channel.send('age is updated');
+                }else{
+                    message.channel.send('invalid age');
+                }
             }else{
-                message.channel.send('invalid age');
+                message.channel.send('Enter age after the **$age**')
             }
+
         }else if (CMD_NAME === 'check_slot'){
             user.findUser(message.author.id)
             .then((data)=>{
                 if(data){
                     message.channel
                     .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
-                    const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
-                    let date = new Date();
-                    date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
-                    console.log(distId,date,"\n");
-                    cowinApi.getSessionByDistrict(distId.district_id,date)
+                    // const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
+                    // let date = new Date();
+                    // date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
+                    // console.log(distId,date,"\n");
+                    //working district id is 137
+                    cowinApi.getSessionByDistrict(data.district)
                     .then((data)=>{
                         // console.log(data);
-                        if(!data.sessions.length){
+                        if(data.sessions.length){
                             message.channel.send('there are some slots :smiley:\n')
+                            console.log(data.sessions);
+                            let centers = '';
+                            data.sessions.forEach(center => {
+                                centers = centers.concat(`${center.available_capacity} in ${center.name} (${center.pincode}) for ${center.min_age_limit}+ \n`);
+                            });
+                            message.channel.send(centers);
                             const exampleEmbed = new Discord.MessageEmbed()
                             .setColor('#FFFFFF')
                             .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
@@ -109,16 +139,67 @@ client.on('message',(message)=>{
                     message.channel.send('Hai ,please do set your credentials\nby typing the **$set** command');
                 }
             })
+            .catch(err=>console.log(err))
             // message.channel.send(message.channel.id);
             // message.channel.send('Checking for the slot in the given district');
+        }else if(CMD_NAME === 'check_slot_pin'){
+            
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(data.pincode){
+                    message.channel
+                    .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                    const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
+                    let date = new Date();
+                    date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
+                    console.log(distId,date,"\n");
+                    // let ageGroup = (data.age<45)?((data.age<18)?"minor":'18'):'45';
+                    let age = data.age;
+                    cowinApi.getSessionByPin(data.pincode,date)
+                    .then((slots)=>{
+                        // console.log(slots);
+                        if(slots.sessions.length){
+                            message.channel.send('there are some slots :smiley:\n')
+                            console.log(slots.sessions);
+                            let centers = '';
+                            slots.sessions.forEach(center => {
+                                centers = (age >= center.min_age_limit)?centers.concat(`${center.available_capacity} in ${center.name} \n`):centers;
+                            });
+                            message.channel.send(centers);
+                            const exampleEmbed = new Discord.MessageEmbed()
+                            .setColor('#FFFFFF')
+                            .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
+                            .setTitle('Register for Vacination')
+                            .setURL('https://selfregistration.cowin.gov.in/')
+                            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
+                            .setTimestamp()
+                            .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+
+                            message.channel.send(exampleEmbed);  
+                        }else{
+                            message.channel.send('currently there are no slots :cry: check later')
+
+                        }
+                    })
+                }else{
+                    message.channel.send('do set your pincode by typing \n **$pincode** your_pincode like $pincode 112233');
+                }
+            })
+            .catch(err=>console.log(err))
+
         }else if (CMD_NAME === 'pincode'){
             let pincode = parseInt(args[0]);
-            if(!isNaN(pincode)){
-                user.updateUser(message.author.id,{pincode:pincode});
-                message.channel.send('pincode is setted');
+            if(args.length){
+                if(!isNaN(pincode)){
+                    user.updateUser(message.author.id,{pincode:pincode});
+                    message.channel.send('pincode is setted');
+                }else{
+                    message.channel.send('enter valid pincode');
+                }
             }else{
-                message.channel.send('enter valid pincode');
+                message.channel.send('enter the pincode after **$pincode**')
             }
+
         }else if(CMD_NAME === 'set'){
             user.findUser(message.author.id)
             .then((data)=>{
@@ -177,4 +258,6 @@ client.on('message',(message)=>{
 });
 
 //logging in to the bot
-client.login(process.env.DISCORD_BOT_TOKEN);
+client.login(process.env.DISCORD_BOT_TOKEN)
+
+
