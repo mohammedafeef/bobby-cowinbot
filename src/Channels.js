@@ -1,9 +1,10 @@
+require('dotenv').config()
 const { Channel } = require('./model.js');
 const mongoose = require('mongoose');
 // creating the connection to mongodb
 // mongoose.connect('mongodb://localhost:27017/bobby',{useNewUrlParser: true});
 mongoose.connect(
-    'mongodb+srv://bobby:gocorona@cluster0.d3otg.mongodb.net/bobby-cowin?retryWrites=true&w=majority'
+    process.env.MONGO_SERVER_ROUTE
     ,{
         useNewUrlParser: true,
         useUnifiedTopology:true
