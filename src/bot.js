@@ -177,7 +177,7 @@ client.on('message',(message)=>{
             // }
 
             let filter = m => m.author.id === message.author.id;
-            message.channel.send(`<@${message.author.id}> Enter your pincode`);
+            message.channel.send(`<@${message.author.id}> Enter your age`);
             // let isCreated = false;
                 console.log('entered to the loop');
                 message.channel.awaitMessages(filter,{
@@ -209,7 +209,7 @@ client.on('message',(message)=>{
             user.updateUser(message.author.id,{notify_state:0});
             message.channel.send('I don\'t notify you in each hour :cry:')
         }
-        else if (CMD_NAME === 'slot_dist'){
+        else if (CMD_NAME === 'slot_district'){
             user.findUser(message.author.id)
             .then((data)=>{
                 if(data.district && data.age>17){
@@ -217,7 +217,7 @@ client.on('message',(message)=>{
                     .send(`
                     <@${data.user_id}>:satellite: checking the slots on
                         :arrow_forward: district : ${data.district}
-                        :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                        :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<18)?'miner':'18+'}`);
                     // const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
                     // let date = new Date();
                     // date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;

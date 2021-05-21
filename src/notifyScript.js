@@ -18,10 +18,9 @@ const checkSlotByDistrict = async (id,district,age) =>{
     // console.log(id,'\n',sessions);
     let member = await client.users.fetch(id);
     if(sessions.centers.length){
-        member.send('there are some slots :smiley:\n');
         // console.log(c);
         let slots = '';
-        data.centers.forEach(center => {
+        sessions.centers.forEach(center => {
             center.sessions.forEach(session =>{
                 if(session.available_capacity >0 && session.min_age_limit >= age){
                     slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
