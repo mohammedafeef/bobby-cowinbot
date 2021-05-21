@@ -93,6 +93,7 @@ const getCentersByLat = async (lat=28.72,long=77.14)=>{
 //To get vaccination session by pincode for 7 days
 const getSessionByPinForWeek = async (pincode = 110001)=>{
     try {
+        console.log(pincode);
         const date = getTodayDate();
         const res = await axios.get('/v2/appointment/sessions/public/calendarByPin',
         {                                  
@@ -150,6 +151,7 @@ const getSessionByCentreForWeek = async (centerid = 1235)=>{
         console.log(err);
     }
 };
+// getSessionByDistrict('malappuram').then((data)=>console.log(data));
 // getSessionByDistrict('malappuram').then((data)=>console.log(data));
 module.exports = {
     getStates, 

@@ -7,15 +7,15 @@ const client = new Discord.Client();
 //importing the database methods
 const user = require('./Channels');
 
-//importing meta data of districts 
-const { districtId } = require('./districtId');
-
 //importing notify script 
 const { checkAvailability } = require('./notifyScript');
 // const districtId = {
 //     "malappuram":152,
 //     "kozhikode":150
 // }
+
+
+const {districtId} = require('./districtId');
 // to filter the message
 let filter = m => m.author.id === message.author.id;
 //job scheduler script
@@ -32,9 +32,9 @@ client.on('ready',()=>{
     // .then(channel =>{
     //     channel.send( `:stop_sign: Enter **${PREFIX}help** to get all the commands :stop_sign:`);
     // })
-    // structure to run fun in every hour 0 * * * *
 
-    let notifyJob = new cronJob('0 * * * *',()=>{
+    // structure to run fun in every hour 0 * * * *
+    let notifyJob = new cronJob(' 0 * * * *',()=>{
         console.log("i am here with you");
         checkAvailability();
     })
@@ -67,7 +67,8 @@ client.on('message',(message)=>{
     if(message.author.bot)return;
     //check for bot mentioned message
     if(message.mentions.has(client.user.id)){
-        user.findUser(message.author.id).then(
+        user.findUser(message.author.id)
+        .then(
             (data)=>{
                 console.log(data);
                 if(data){
@@ -113,16 +114,43 @@ client.on('message',(message)=>{
 
 
         }else if(CMD_NAME == 'details'){
+            
             user.findUser(message.author.id)
             .then((data)=>{
-                message.channel.send(`
-                **Your details**
-                **Name**   ${data.name}
-                **Age**    ${data.age?data.age:'Not updated'}
-                **Pincode** ${data.pincode?data.pincode:'Not updated'}
-                **District** ${data.district?data.district:'Not updated'}
-                `)
+                if(!data){
+                    user.insertUser({
+                        user_id:message.author.id,
+                        notify_state:1,
+                        name:message.author.username
+                    })
+                    message.channel.send(`
+                    **Your details**
+                    **Name**   ${message.author.username}
+                    **Age**    Not updated
+                    **Pincode** Not updated
+                    **District** Not updated
+                    `)
+                }else{
+                    message.channel.send(`
+                    **Your details**
+                    **Name**    ${data.name}
+                    **Age**     ${data.age?data.age:'Not updated'}
+                    **Pincode**  ${data.pincode?data.pincode:'Not updated'}
+                    **District** ${data.district?data.district:'Not updated'}
+                    `)
+                }
             })
+            // user.findUser(message.author.id)
+            // .then((data)=>{
+            //     message.channel.send(`
+            //     **Your details**
+            //     **Name**   ${data.name}
+            //     **Age**    ${data.age?data.age:'Not updated'}
+            //     **Pincode** ${data.pincode?data.pincode:'Not updated'}
+            //     **District** ${data.district?data.district:'Not updated'}
+            //     `)
+            // })
+
         }
         else if(CMD_NAME === 'district'){
             // if(args.length){
@@ -135,7 +163,16 @@ client.on('message',(message)=>{
             // }else{
             //     message.channel.send('Enter district after the **$district**');
             // }
-
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(!data){
+                    user.insertUser({
+                        user_id:message.author.id,
+                        notify_state:1,
+                        name:message.author.username
+                    })
+                }
+            })
             let filter = m => m.author.id === message.author.id;
             message.channel.send(`<@${message.author.id}> Enter your district name`);
             // let isCreated = false;
@@ -152,7 +189,8 @@ client.on('message',(message)=>{
                     .toLowerCase()
                     .trim()
                     .split(/\s+/);
-                    if(districtId.filter((dist)=>dist.district_name.toLowerCase() === district.toLowerCase())){
+                    console.log(district,districtId.filter((dist)=>dist.district_name.toLowerCase() === district.toLowerCase()));
+                    if(districtId.filter((dist)=>dist.district_name.toLowerCase() === district.toLowerCase())[0]){
                         user.updateUser(message.author.id,{district:district});
                         message.channel.send('district is updated');
                     }else{
@@ -175,7 +213,16 @@ client.on('message',(message)=>{
             // }else{
             //     message.channel.send('Enter age after the **$age**')
             // }
-
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(!data){
+                    user.insertUser({
+                        user_id:message.author.id,
+                        notify_state:1,
+                        name:message.author.username
+                    })
+                }
+            })
             let filter = m => m.author.id === message.author.id;
             message.channel.send(`<@${message.author.id}> Enter your age`);
             // let isCreated = false;
@@ -192,7 +239,7 @@ client.on('message',(message)=>{
                     .toLowerCase()
                     .trim()
                     .split(/\s+/);
-                    if(!isNaN(age)){
+                    if(!isNaN(age) && age>0 && age <100){
                         user.updateUser(message.author.id,{age:age});
                         message.channel.send('Age is updated');
                     }else{
@@ -228,26 +275,26 @@ client.on('message',(message)=>{
                     .then((data)=>{
                         // console.log(data);
                         if(data.centers.length){
-                            console.log(data.centers);
+                            // console.log(data.centers);
                             let slots = '';
                             data.centers.forEach(center => {
-                                center.sessions.forEach(session =>{
-                                    if(session.available_capacity >0 && session.min_age_limit >= age){
-                                        slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
-                                    }
-                                })
+                                // center.sessions.forEach(session =>{
+                                //     if(session.available_capacity >0 && session.min_age_limit >= age){
+                                //         slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
+                                //     }
+                                // })
+                                let spot = center.sessions.find((session)=>(session.available_capacity >0 && session.min_age_limit <= age))
+                                if(spot){
+                                    slots = slots.concat(` :hospital: ${center.name}   :syringe: **${spot.available_capacity}**\n`)
+                                }
                             });
                             if(slots.length){
                                 message.channel.send('there are some slots :smiley:\n')
                                 message.channel.send(slots);
                                 const exampleEmbed = new Discord.MessageEmbed()
-                                .setColor('#FFFFFF')
-                                .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
                                 .setTitle('Register for Vacination')
                                 .setURL('https://selfregistration.cowin.gov.in/')
-                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
-                                .setTimestamp()
-                                .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg');
     
                                 message.channel.send(exampleEmbed);
                             }else{
@@ -270,7 +317,7 @@ client.on('message',(message)=>{
             
             user.findUser(message.author.id)
             .then((data)=>{
-                if(data.pincode && date.age){
+                if(data.pincode && data.age){
                     message.channel
                     .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
                     const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
@@ -279,30 +326,35 @@ client.on('message',(message)=>{
                     console.log(distId,date,"\n");
                     // let ageGroup = (data.age<45)?((data.age<18)?"minor":'18'):'45';
                     let age = data.age;
-                    cowinApi.getSessionByPin(data.pincode,date)
-                    .then((slots)=>{
+                    cowinApi.getSessionByPinForWeek(data.pincode)
+                    .then((data)=>{
                         // console.log(slots);
-                        if(slots.sessions.length){
-                            message.channel.send('There are some slots :smiley:\n')
-                            console.log(slots.sessions);
+                        // console.log(data);
+                        if(data.centers.length){
+                            // console.log(slots.sessions);
                             let slots = '';
                             data.centers.forEach(center => {
-                                center.sessions.forEach(session =>{
-                                    if(session.available_capacity >0 && session.min_age_limit >= age){
-                                        slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
-                                    }
-                                })
+                                // center.sessions.forEach(session =>{
+                                //     console.log(session.min_age_limit <= age );
+                                //     if(session.available_capacity >0 && session.min_age_limit <= age){
+                                //         console.log("here");
+                                //         message.channel.send(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`)
+                                //         slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
+                                //     }
+                                // })
+                                let spot = center.sessions.find((session)=>(session.available_capacity >0 && session.min_age_limit <= age))
+                                if(spot){
+                                    slots = slots.concat(` :hospital: ${center.name}   :syringe: **${spot.available_capacity}**\n`)
+                                }
                             });
+                            // console.log("slot name",slots);
                             if(slots.length){
+                                message.channel.send("there are some slots :smiley:\n")
                                 message.channel.send(slots);
                                 const exampleEmbed = new Discord.MessageEmbed()
-                                .setColor('#FFFFFF')
-                                .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
                                 .setTitle('Register for Vacination')
                                 .setURL('https://selfregistration.cowin.gov.in/')
-                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
-                                .setTimestamp()
-                                .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg');
     
                                 message.channel.send(exampleEmbed); 
                             }else{
@@ -331,7 +383,17 @@ client.on('message',(message)=>{
             //     }
             // }else{
             //     message.channel.send('enter the pincode after **$pincode**')
-            // }
+            // }j\
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(!data){
+                    user.insertUser({
+                        user_id:message.author.id,
+                        notify_state:1,
+                        name:message.author.username
+                    })
+                }
+            })
             let filter = m => m.author.id === message.author.id;
             message.channel.send(`<@${message.author.id}> Enter your pincode`);
             // let isCreated = false;

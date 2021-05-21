@@ -42,7 +42,7 @@ const findUser = (id)=>{
         (err,data)=>{
             if(err || !data){
                 console.log('failed')
-                return "failed";
+                return 0;
             }
             console.log('returned')
             return data;

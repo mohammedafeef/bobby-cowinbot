@@ -15,32 +15,30 @@ const checkAvailability = async ()=>{
 
 const checkSlotByDistrict = async (id,district,age) =>{
     const sessions = await getSessionByDistrictForWeek(district);
-    // console.log(id,'\n',sessions);
     let member = await client.users.fetch(id);
+    console.log(sessions);
     if(sessions.centers.length){
-        // console.log(c);
         let slots = '';
         sessions.centers.forEach(center => {
-            center.sessions.forEach(session =>{
-                if(session.available_capacity >0 && session.min_age_limit >= age){
-                    slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
-                }
-            })
+            let spot = center.sessions.find((session)=>(session.available_capacity >0 && session.min_age_limit <= age))
+            if(spot){
+                slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${spot.available_capacity}**\n`)
+            }
         });
         if(slots.length){
             member.send('there are some slots :smiley:\n')
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()
-            .setColor('#FFFFFF')
-            .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
             .setTitle('Register for Vacination')
             .setURL('https://selfregistration.cowin.gov.in/')
-            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
-            .setTimestamp()
-            .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg');
 
             member.send(exampleEmbed);
+        }else{
+            member.send('no slot');
         }
+    }else{
+        member.send('no slot')
     }
 
 }
