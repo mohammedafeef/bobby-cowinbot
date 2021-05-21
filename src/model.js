@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 //schema of the models
 const channelSchema = new Schema ({
     user_id:{
-        type:String
+        type:String,
+        required:true
     },
     district:{
         type:String
@@ -16,6 +17,10 @@ const channelSchema = new Schema ({
     },
     name:{
         type:String
+    },
+    notify_state:{
+        type:Number,
+        required:true
     }
 
 });

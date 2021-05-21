@@ -4,6 +4,8 @@ axios.defaults.baseURL = 'https://cdn-api.co-vin.in/api'
 axios.defaults.headers.common['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0'
 
 const {districtId} = require('./districtId');
+
+const {getTodayDate,getDistrictId} = require('./apiHelper');
 //To get list of states
 const getStates = async ()=>{
     try {
@@ -28,7 +30,8 @@ const getDistricts = async (stateid=17)=>{
 };
 
 //To get vaccination sessions by pincode
-const getSessionByPin = async (pincode = 110001,date = '16-05-2021')=>{
+const getSessionByPin = async (pincode = 110001)=>{
+    const date = getTodayDate();
     try {
         const res = await axios.get('/v2/appointment/sessions/public/findByPin',
         {
@@ -50,8 +53,8 @@ const getSessionByPin = async (pincode = 110001,date = '16-05-2021')=>{
 //To get vaccination sessions by district
 const getSessionByDistrict = async (districtname)=>{
     try {
-        let date = new Date();
-        date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`
+        const date = getTodayDate();
+        console.log(date);
         const dist = districtId.find(dis=>dis.district_name.toLowerCase() === districtname.toLowerCase());
         const res = await axios.get(
         '/v2/appointment/sessions/public/findByDistrict',
@@ -88,8 +91,9 @@ const getCentersByLat = async (lat=28.72,long=77.14)=>{
 };
 
 //To get vaccination session by pincode for 7 days
-const getSessionByPinForWeek = async (pincode = 110001,date = '16-05-2021')=>{
+const getSessionByPinForWeek = async (pincode = 110001)=>{
     try {
+        const date = getTodayDate();
         const res = await axios.get('/v2/appointment/sessions/public/calendarByPin',
         {                                  
           params: {
@@ -107,12 +111,14 @@ const getSessionByPinForWeek = async (pincode = 110001,date = '16-05-2021')=>{
 };
 
 //To get vaccination session by district for 7 days
-const getSessionByDistrictForWeek= async (districtid = 305,date = '16-05-2021')=>{
+const getSessionByDistrictForWeek= async (districtName)=>{
     try {
+        console.log("hai i am here")
+        const date = getTodayDate();
         const res = await axios.get('/v2/appointment/sessions/public/calendarByDistrict',
         {
          params: {
-              'district_id':`${districtid}`,
+              'district_id':`${getDistrictId(districtName)}`,
               'date':`${date}`
           }
         });
@@ -126,8 +132,9 @@ const getSessionByDistrictForWeek= async (districtid = 305,date = '16-05-2021')=
 };
 
 //To get vaccination session by center for 7 days
-const getSessionByCentreForWeek = async (centerid = 1235,date = '16-05-2021')=>{
+const getSessionByCentreForWeek = async (centerid = 1235)=>{
     try {
+        const date = getTodayDate();
         const res = await axios.get('/v2/appointment/sessions/public/calendarByCenter',
         {
          params: {
@@ -143,7 +150,7 @@ const getSessionByCentreForWeek = async (centerid = 1235,date = '16-05-2021')=>{
         console.log(err);
     }
 };
-
+// getSessionByDistrict('malappuram').then((data)=>console.log(data));
 module.exports = {
     getStates, 
     getDistricts, 

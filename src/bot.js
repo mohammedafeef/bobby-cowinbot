@@ -16,7 +16,9 @@ const { checkAvailability } = require('./notifyScript');
 //     "malappuram":152,
 //     "kozhikode":150
 // }
-
+// to filter the message
+let filter = m => m.author.id === message.author.id;
+//job scheduler script
 const cronJob = require('cron').CronJob;
 //cowin api request handler module
 const cowinApi = require('./apiRequest');
@@ -44,16 +46,19 @@ client.on('guildMemberAdd',member =>{
     console.log(member.id);
     member.send("hai :smiley:,welcome to the server \n type **$help** to more about me");
     let userData = {
-        user_id:message.author.id,
-        name:message.author.username
+        user_id:member.user.id,
+        name:member.user.username,
+        notify_state:1
     }
+    console.log(member.user.username,"Added")
     user.insertUser(userData);
+
 
 });
 
 //event to fire when the user is removed
 client.on('guildMemberRemove',member=>{
-    console.log(member.user.username);
+    console.log(member.user.username ,"Removed");
     user.deletUser(member.user.id);
 })
 // setting responses for messages from the client
@@ -89,82 +94,183 @@ client.on('message',(message)=>{
         // console.log("command is :",CMD_NAME,"\n arguments",args)
         // each command handles here
         if(CMD_NAME === 'help'){
-            message.channel.send(`:mobile_phone: **commands**\n\n\t:loudspeaker:  ${PREFIX}district : To set the district \n\t:loudspeaker:  ${PREFIX}age : To set the age\n\n must use **${PREFIX}** as command prefix\n`)
+            // message.channel.send(`:mobile_phone: **commands**\n\n\t:loudspeaker:  ${PREFIX}district : update the district \n\t:loudspeaker:  ${PREFIX}age : update the age \n\t:loudspeaker:  ${PREFIX}pin : update the pincode\n\n\t:loudspeaker:  ${PREFIX}check_slot : slots in district \n\t:loudspeaker:  ${PREFIX}check_slot_pin : slots in pincode\n\n must use **${PREFIX}** as command prefix\n`)
+            message.channel.send(`
+            :mobile_phone: **Commads to interact with boby**
+                :loudspeaker:  ${PREFIX}details : show your data
+            **To update the data**
+                :loudspeaker:  ${PREFIX}district : update the district 
+                :loudspeaker:  ${PREFIX}age : update the age 
+                :loudspeaker:  ${PREFIX}pin : update the pincode
+            **To check the slot**
+                :loudspeaker:  ${PREFIX}slot_district : slots in district 
+                :loudspeaker:  ${PREFIX}slot_pin : slots in pincode
+            **To change notification state**
+                :loudspeaker:  ${PREFIX}notify_on : To enable hourly slot notify 
+                :loudspeaker:  ${PREFIX}notify_off : To disable hourly slot notify
+            Must use **${PREFIX}** as command prefix
+            `)
 
-        }else if(CMD_NAME === 'district'){
-            if(args.length){
-                if(districtId.filter((dist)=>dist.district_name.toLowerCase() === args[0].toLowerCase())){
-                    user.updateUser(message.author.id,{district:args[0]});
-                    message.channel.send('district is updated');
-                }else{
-                    message.channel.send('Please, check the district name and correct it');
-                }
-            }else{
-                message.channel.send('Enter district after the **$district**');
-            }
 
-        }else if(CMD_NAME === 'age'){
-            let age = parseInt(args[0]);
-            if(args.length){
-                if(!isNaN(age)){
-                    user.updateUser(message.author.id,{age:age});
-                    message.channel.send('Age is updated');
-                }else{
-                    message.channel.send('Invalid age');
-                }
-            }else{
-                message.channel.send('Enter age after the **$age**')
-            }
-
-        }else if (CMD_NAME === 'check_slot'){
+        }else if(CMD_NAME == 'details'){
             user.findUser(message.author.id)
             .then((data)=>{
-                if(data){
+                message.channel.send(`
+                **Your details**
+                **Name**   ${data.name}
+                **Age**    ${data.age?data.age:'Not updated'}
+                **Pincode** ${data.pincode?data.pincode:'Not updated'}
+                **District** ${data.district?data.district:'Not updated'}
+                `)
+            })
+        }
+        else if(CMD_NAME === 'district'){
+            // if(args.length){
+            //     if(districtId.filter((dist)=>dist.district_name.toLowerCase() === args[0].toLowerCase())){
+            //         user.updateUser(message.author.id,{district:args[0]});
+            //         message.channel.send('district is updated');
+            //     }else{
+            //         message.channel.send('Please, check the district name and correct it');
+            //     }
+            // }else{
+            //     message.channel.send('Enter district after the **$district**');
+            // }
+
+            let filter = m => m.author.id === message.author.id;
+            message.channel.send(`<@${message.author.id}> Enter your district name`);
+            // let isCreated = false;
+                // console.log('entered to the loop');
+                message.channel.awaitMessages(filter,{
+                    max:1,
+                    time:200000,
+                    errors: ['time']
+                })
+                .then(res =>{
+                    res = res.first().content;
+                    console.log('replied:',res);
+                    const [district] = res
+                    .toLowerCase()
+                    .trim()
+                    .split(/\s+/);
+                    if(districtId.filter((dist)=>dist.district_name.toLowerCase() === district.toLowerCase())){
+                        user.updateUser(message.author.id,{district:district});
+                        message.channel.send('district is updated');
+                    }else{
+                        message.channel.send('Please, check the district name and correct it');
+                    }
+                    
+                    
+                })
+
+
+        }else if(CMD_NAME === 'age'){
+            // let age = parseInt(args[0]);
+            // if(args.length){
+            //     if(!isNaN(age)){
+            //         user.updateUser(message.author.id,{age:age});
+            //         message.channel.send('Age is updated');
+            //     }else{
+            //         message.channel.send('Invalid age');
+            //     }
+            // }else{
+            //     message.channel.send('Enter age after the **$age**')
+            // }
+
+            let filter = m => m.author.id === message.author.id;
+            message.channel.send(`<@${message.author.id}> Enter your pincode`);
+            // let isCreated = false;
+                console.log('entered to the loop');
+                message.channel.awaitMessages(filter,{
+                    max:1,
+                    time:200000,
+                    errors: ['time']
+                })
+                .then(res =>{
+                    res = res.first().content;
+                    console.log('replied:',res);
+                    const [age] = res
+                    .toLowerCase()
+                    .trim()
+                    .split(/\s+/);
+                    if(!isNaN(age)){
+                        user.updateUser(message.author.id,{age:age});
+                        message.channel.send('Age is updated');
+                    }else{
+                        message.channel.send('Invalid age');
+                    }
+                    
+                    
+                })
+
+        }else if(CMD_NAME === 'notify_on'){
+            user.updateUser(message.author.id,{notify_state:1});
+            message.channel.send('I will notify you when there have slot :smiley:')
+        }else if(CMD_NAME === 'notify_off'){
+            user.updateUser(message.author.id,{notify_state:0});
+            message.channel.send('I don\'t notify you in each hour :cry:')
+        }
+        else if (CMD_NAME === 'slot_dist'){
+            user.findUser(message.author.id)
+            .then((data)=>{
+                if(data.district && data.age>17){
                     message.channel
-                    .send(`<@${data.user_id}>:satellite: checking the slots on\n\t :arrow_forward: district : ${data.district}\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
+                    .send(`
+                    <@${data.user_id}>:satellite: checking the slots on
+                        :arrow_forward: district : ${data.district}
+                        :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
                     // const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
                     // let date = new Date();
                     // date = `${date.getDate()}-${date.getMonth()+1}-${date.getYear()+1900}`;
                     // console.log(distId,date,"\n");
                     //working district id is 137
-                    cowinApi.getSessionByDistrict(data.district)
+                    let age = data.age;
+                    cowinApi.getSessionByDistrictForWeek(data.district)
                     .then((data)=>{
                         // console.log(data);
-                        if(data.sessions.length){
-                            message.channel.send('there are some slots :smiley:\n')
-                            console.log(data.sessions);
-                            let centers = '';
-                            data.sessions.forEach(center => {
-                                centers = centers.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${center.available_capacity}**\n`);
+                        if(data.centers.length){
+                            console.log(data.centers);
+                            let slots = '';
+                            data.centers.forEach(center => {
+                                center.sessions.forEach(session =>{
+                                    if(session.available_capacity >0 && session.min_age_limit >= age){
+                                        slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
+                                    }
+                                })
                             });
-                            message.channel.send(centers);
-                            const exampleEmbed = new Discord.MessageEmbed()
-                            .setColor('#FFFFFF')
-                            .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
-                            .setTitle('Register for Vacination')
-                            .setURL('https://selfregistration.cowin.gov.in/')
-                            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
-                            .setTimestamp()
-                            .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
-
-                            message.channel.send(exampleEmbed);  
+                            if(slots.length){
+                                message.channel.send('there are some slots :smiley:\n')
+                                message.channel.send(slots);
+                                const exampleEmbed = new Discord.MessageEmbed()
+                                .setColor('#FFFFFF')
+                                .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
+                                .setTitle('Register for Vacination')
+                                .setURL('https://selfregistration.cowin.gov.in/')
+                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
+                                .setTimestamp()
+                                .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+    
+                                message.channel.send(exampleEmbed);
+                            }else{
+                                message.channel.send('Currently there are no :syringe:slots :cry:')
+                            }
+  
                         }else{
                             message.channel.send('Currently there are no :syringe:slots :cry:')
 
                         }
                     })
                 }else{
-                    message.channel.send('Hai ,please do set your credentials\nby typing the **$set** command');
+                    message.channel.send('please,Do set your district and age\n for more details check **$help**');
                 }
             })
             .catch(err=>console.log(err))
             // message.channel.send(message.channel.id);
             // message.channel.send('Checking for the slot in the given district');
-        }else if(CMD_NAME === 'check_slot_pin'){
+        }else if(CMD_NAME === 'slot_pin'){
             
             user.findUser(message.author.id)
             .then((data)=>{
-                if(data.pincode){
+                if(data.pincode && date.age){
                     message.channel
                     .send(`<@${data.user_id}>checking the slots on\n\t :arrow_forward: pincode: ${data.pincode}\n\t :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<=18)?'miner':'18+'}`);
                     const distId = districtId.find(dis=>dis.district_name.toLowerCase() === data.district.toLowerCase());
@@ -177,53 +283,87 @@ client.on('message',(message)=>{
                     .then((slots)=>{
                         // console.log(slots);
                         if(slots.sessions.length){
-                            message.channel.send('there are some slots :smiley:\n')
+                            message.channel.send('There are some slots :smiley:\n')
                             console.log(slots.sessions);
-                            let centers = '';
-                            slots.sessions.forEach(center => {
-                                centers = (age >= center.min_age_limit)?centers.concat(`${center.available_capacity} in ${center.name} \n`):centers;
+                            let slots = '';
+                            data.centers.forEach(center => {
+                                center.sessions.forEach(session =>{
+                                    if(session.available_capacity >0 && session.min_age_limit >= age){
+                                        slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${session.available_capacity}**\n`);
+                                    }
+                                })
                             });
-                            message.channel.send(centers);
-                            const exampleEmbed = new Discord.MessageEmbed()
-                            .setColor('#FFFFFF')
-                            .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
-                            .setTitle('Register for Vacination')
-                            .setURL('https://selfregistration.cowin.gov.in/')
-                            .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
-                            .setTimestamp()
-                            .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
-
-                            message.channel.send(exampleEmbed);  
+                            if(slots.length){
+                                message.channel.send(slots);
+                                const exampleEmbed = new Discord.MessageEmbed()
+                                .setColor('#FFFFFF')
+                                .setThumbnail('https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg')
+                                .setTitle('Register for Vacination')
+                                .setURL('https://selfregistration.cowin.gov.in/')
+                                .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg')
+                                .setTimestamp()
+                                .setFooter('go and register quickly', 'https://prod-cdn.preprod.co-vin.in/assets/images/covid19logo.jpg');
+    
+                                message.channel.send(exampleEmbed); 
+                            }else{
+                                message.channel.send('currently there are no slots :cry: check later') 
+                            }
+ 
                         }else{
                             message.channel.send('currently there are no slots :cry: check later')
 
                         }
                     })
                 }else{
-                    message.channel.send('do set your pincode by typing \n **$pincode** your_pincode like $pincode 112233');
+                    message.channel.send('Do set your pincode and age \n for more details check **$help**');
                 }
             })
             .catch(err=>console.log(err))
 
         }else if (CMD_NAME === 'pincode'){
-            let pincode = parseInt(args[0]);
-            if(args.length){
-                if(!isNaN(pincode)){
-                    user.updateUser(message.author.id,{pincode:pincode});
-                    message.channel.send('pincode is setted');
-                }else{
-                    message.channel.send('enter valid pincode');
-                }
-            }else{
-                message.channel.send('enter the pincode after **$pincode**')
-            }
+            // let pincode = parseInt(args[0]);
+            // if(args.length){
+            //     if(!isNaN(pincode)){
+            //         user.updateUser(message.author.id,{pincode:pincode});
+            //         message.channel.send('pincode is setted');
+            //     }else{
+            //         message.channel.send('enter valid pincode');
+            //     }
+            // }else{
+            //     message.channel.send('enter the pincode after **$pincode**')
+            // }
+            let filter = m => m.author.id === message.author.id;
+            message.channel.send(`<@${message.author.id}> Enter your pincode`);
+            // let isCreated = false;
+                console.log('entered to the loop');
+                message.channel.awaitMessages(filter,{
+                    max:1,
+                    time:200000,
+                    errors: ['time']
+                })
+                .then(res =>{
+                    res = res.first().content;
+                    console.log('replied:',res);
+                    const [pincode] = res
+                    .toLowerCase()
+                    .trim()
+                    .split(/\s+/);
+                    if(!isNaN(pincode)){
+                        user.updateUser(message.author.id,{pincode:pincode});
+                        message.channel.send('pincode is setted');
+                    }else{
+                        message.channel.send('enter valid pincode');
+                    }
+                    
+                    
+                })
 
         }else if(CMD_NAME === 'set_all'){
-            user.findUser(message.author.id)
-            .then((data)=>{
-                if(data.district && data.pincode && data.age){
-                    message.channel.send('your already added check **$help** to modify them')
-                }else{
+            // user.findUser(message.author.id)
+            // .then((data)=>{
+                // if(data.district && data.pincode && data.age){
+                //     message.channel.send('your already added check **$help** to modify them')
+                // }else{
                     let filter = m => m.author.id === message.author.id;
                     message.channel.send('Do send your pincode,district and age in following format\n ** pincode district age ** \n like 676306 malappuram 20');
                     let isCreated = false;
@@ -270,13 +410,12 @@ client.on('message',(message)=>{
                             
                             
                         })
-                        .catch(err => {
-                            message.channel.send("invalid data try again with **$set** command");
-                        })
+                        // .catch(err => {
+                        //     message.channel.send("invalid data try again with **$set** command");
+                        // })
                     // }
-                }
-            }
-            )
+            // }
+            // )
         }
     }
 });
