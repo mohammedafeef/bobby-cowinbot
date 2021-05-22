@@ -401,7 +401,7 @@ client.on('message',(message)=>{
                         pincode:parseInt(pincode),
                         district:district
                     }
-                    Channel.updateUser(message.author.id,details);
+                    user.updateUser(message.author.id,details);
                     console.log(`[ ${message.author.tag}]: U - All`)
                     message.channel.send(':space_invader: your data saved check **$help** for checking the :slots');
                 }else{
