@@ -1,22 +1,24 @@
 require('dotenv').config();
-const { findAll } = require('./Channels');
-const { getSessionByDistrict, getSessionByDistrictForWeek } = require('./apiRequest');
+const { findAll } = require('./db/Channels');
+const { getSessionByDistrictForWeek } = require('./cowinApi/apiRequest');
 const Discord = require('discord.js');
 const client = new Discord.Client();
+//To all users data from db and the slot checking function
 const checkAvailability = async ()=>{
     const usersData = await findAll();
     usersData.forEach((user)=>{
-        // console.log(user.name,'\n');
         if(user.notify_state && user.district && user.age){
             checkSlotByDistrict(user.user_id,user.district,user.age)
         }
     })
 }
-
+//check slot in given district
 const checkSlotByDistrict = async (id,district,age) =>{
+    //fetch data from cowin api
     const sessions = await getSessionByDistrictForWeek(district);
+    //fetch users data from the discord api
     let member = await client.users.fetch(id);
-    console.log(sessions);
+    //checks if slot are available or not
     if(sessions.centers.length){
         let slots = '';
         sessions.centers.forEach(center => {
@@ -34,15 +36,13 @@ const checkSlotByDistrict = async (id,district,age) =>{
             .setImage('https://imgk.timesnownews.com/media/cowin_app.jpg');
 
             member.send(exampleEmbed);
-        }else{
-            member.send('no slot');
         }
-    }else{
-        member.send('no slot')
     }
 
 }
+//loging in to the bot
 client.login(process.env.DISCORD_BOT_TOKEN)
+
 module.exports = {
     checkAvailability
 }

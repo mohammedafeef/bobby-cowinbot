@@ -25,11 +25,12 @@ const channelSchema = new Schema ({
 
 });
 
-//models of the cowin app
+//models of the channel
 const Channel = mongoose.model(
     'channel',
     channelSchema
 );
+
 module.exports = {
     Channel
 };

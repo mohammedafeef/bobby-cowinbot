@@ -18,18 +18,17 @@ const updateUser = (id,updatedData)=>{
         {user_id:id},
         updatedData,
         (err)=>{
-            console.log((err)?err:`${id} updated`);
+            console.log(err)
         }  
     )
 }
+//get all registered users data from the db
 const findAll = ()=>{
     return Channel.find({},
         (err,data)=>{
             if(err || !data){
-                console.log('failed to get all');
                 return "failed"
             }
-            console.log('successfully fethched all');
             return data;
         }
         
@@ -41,10 +40,8 @@ const findUser = (id)=>{
         {user_id:id},
         (err,data)=>{
             if(err || !data){
-                console.log('failed')
                 return 0;
             }
-            console.log('returned')
             return data;
         })
 };
@@ -53,7 +50,7 @@ const findUser = (id)=>{
 const insertUser = (data)=>{
     const user = new Channel(data);
     Channel.insertMany([user],(err)=>{
-        err?console.log(err):console.log('inserted');
+        console.log(err);
     });
 }
 //to delete a document
@@ -61,18 +58,10 @@ const deletUser = (userId)=>{
     Channel.deleteOne({
         user_id:userId
     }
-    ,(err)=>console.log(err?err:"deleted")
+    ,(err)=>console.log(err)
     )
 }
-// const user = {
-//     user_id:"124",
-//     name:'azeeb',
-//     district:"malappuram",
-//     pincode:113344,
-//     age:12
-// }
-// findUser('124').then((data)=>console.log(data));
-//exporting the methods
+//exporting db curd functions
 module.exports ={
     insertUser,
     findUser,
