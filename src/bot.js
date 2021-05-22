@@ -46,7 +46,7 @@ client.on('guildMemberAdd',member =>{
             }
             user.insertUser(userData);
         }
-        console.log(`[ ${member.user.tag}]: REM`)
+        console.log(`[ ${member.user.tag}]: ADD`)
     })
 });
 
@@ -55,7 +55,7 @@ client.on('guildMemberRemove',member=>{
     user.findUser(member.id)
     .then((data)=>{
         if(data){
-            console.log(`[ ${member.user.tag}]: ADD`)
+            console.log(`[ ${member.user.tag}]: REM`)
             user.deletUser(member.user.id);
         }
     })
@@ -259,8 +259,8 @@ client.on('message',(message)=>{
                     let age = data.age;
                     cowinApi.getSessionByDistrictForWeek(data.district)
                     .then((data)=>{
+                        console.log(`[ ${message.author.tag}]: S - D`)
                         if(data.centers.length){
-                            console.log(`[ ${message.author.tag}]: S - D`)
                             let slots = '';
                             data.centers.forEach(center => {
                                 let spot = center.sessions.find((session)=>(session.available_capacity >0 && session.min_age_limit <= age))
@@ -305,8 +305,8 @@ client.on('message',(message)=>{
                     let age = data.age;
                     cowinApi.getSessionByPinForWeek(data.pincode)
                     .then((data)=>{
+                        console.log(`[ ${message.author.tag}]: S - P`)
                         if(data.centers.length){
-                            console.log(`[ ${message.author.tag}]: S - P`)
                             let slots = '';
                             data.centers.forEach(center => {
                                 let spot = center.sessions.find((session)=>(session.available_capacity >0 && session.min_age_limit <= age))

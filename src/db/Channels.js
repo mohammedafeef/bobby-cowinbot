@@ -18,7 +18,7 @@ const updateUser = (id,updatedData)=>{
         {user_id:id},
         updatedData,
         (err)=>{
-            console.log(err)
+            console.log(err?err:'U')
         }  
     )
 }
@@ -50,7 +50,7 @@ const findUser = (id)=>{
 const insertUser = (data)=>{
     const user = new Channel(data);
     Channel.insertMany([user],(err)=>{
-        console.log(err);
+        console.log(err?err:'I');
     });
 }
 //to delete a document
@@ -58,7 +58,7 @@ const deletUser = (userId)=>{
     Channel.deleteOne({
         user_id:userId
     }
-    ,(err)=>console.log(err)
+    ,(err)=>console.log(err?err:"D")
     )
 }
 //exporting db curd functions
