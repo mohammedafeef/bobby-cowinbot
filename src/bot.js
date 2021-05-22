@@ -128,6 +128,7 @@ client.on('message',(message)=>{
                     **Age**    Not updated
                     **Pincode** Not updated
                     **District** Not updated
+                    **notify_state** on
                     `)
                 }else{
                     message.channel.send(`
@@ -136,6 +137,7 @@ client.on('message',(message)=>{
                     **Age**     ${data.age?data.age:'Not updated'}
                     **Pincode**  ${data.pincode?data.pincode:'Not updated'}
                     **District** ${data.district?data.district:'Not updated'}
+                    **Notier** ${data.notify_state?'on':'off'}
                     `)
                 }
             })
@@ -223,6 +225,10 @@ client.on('message',(message)=>{
                         notify_state:1,
                         name:message.author.username
                     })
+                    message.channel.send(`
+                    Update your age and distirct 
+                    check the **${PREFIX}help** command
+                    `);
                 }else{
                     user.updateUser(message.author.id,{notify_state:1});
                 }
@@ -239,6 +245,10 @@ client.on('message',(message)=>{
                         notify_state:0,
                         name:message.author.username
                     })
+                    message.channel.send(`
+                    Update your age and distirct 
+                    check the **${PREFIX}help** command
+                    `);
                 }else{
                     user.updateUser(message.author.id,{notify_state:0});
                 }
