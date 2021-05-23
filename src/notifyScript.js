@@ -29,7 +29,7 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
             }
         });
         if(slots.length){
-            member.send('there are some slots :smiley:\n')
+            member.send('There are some slots :smiley:\n')
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()
             .setTitle('Register for Vacination')

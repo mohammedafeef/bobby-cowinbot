@@ -1,3 +1,5 @@
+//         BOBBY THE COWIN SLOT CHECKER
+
 //configuaring the env like API keys
 require('dotenv').config();
 //importing essential modules
@@ -97,7 +99,7 @@ client.on('message',(message)=>{
             //Give an idea about each command
             message.channel.send(`
             :mobile_phone: **Commads to interact with boby**
-                :loudspeaker:  ${PREFIX}details : show your data
+                :loudspeaker:  ${PREFIX}profile : show your data
             **To update the data**
                 :loudspeaker:  ${PREFIX}district : update the district 
                 :loudspeaker:  ${PREFIX}age : update the age 
@@ -112,7 +114,7 @@ client.on('message',(message)=>{
             Must use **${PREFIX}** as command prefix
             `)
 
-        }else if(CMD_NAME == 'details'){
+        }else if(CMD_NAME == 'profile'){
             //To check all the current details available
             user.findUser(message.author.id)
             .then((data)=>{
@@ -123,7 +125,7 @@ client.on('message',(message)=>{
                         name:message.author.username
                     })
                     message.channel.send(`
-                    **Your details**
+                    **Your profile**
                     **Name**   ${message.author.username}
                     **Age**    Not updated
                     **Pincode** Not updated
@@ -132,7 +134,7 @@ client.on('message',(message)=>{
                     `)
                 }else{
                     message.channel.send(`
-                    **Your details**
+                    **Your profile**
                     **Name**    ${data.name}
                     **Age**     ${data.age?data.age:'Not updated'}
                     **Pincode**  ${data.pincode?data.pincode:'Not updated'}
@@ -265,7 +267,7 @@ client.on('message',(message)=>{
                     .send(`
                     <@${data.user_id}>:satellite: checking the slots on
                         :arrow_forward: district : ${data.district}
-                        :arrow_forward: age_group : ${(data.age)>45?'45+':(data.age<18)?'miner':'18+'}`);
+                        :arrow_forward: age_group : ${(data.age)>=45?'45+':(data.age<18)?'miner':'18+'}`);
                     let age = data.age;
                     cowinApi.getSessionByDistrictForWeek(data.district)
                     .then((data)=>{
