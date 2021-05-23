@@ -104,7 +104,7 @@ client.on('message',(message)=>{
                 :loudspeaker:  ${PREFIX}district : update the district 
                 :loudspeaker:  ${PREFIX}age : update the age 
                 :loudspeaker:  ${PREFIX}pin : update the pincode
-                :loudspeaker:  ${PREFIX}set_all : update all
+                :loudspeaker:  ${PREFIX}set_all : update above all in one go
             **To check the slot**
                 :loudspeaker:  ${PREFIX}slot_district : slots in district 
                 :loudspeaker:  ${PREFIX}slot_pin : slots in pincode
