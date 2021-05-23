@@ -57,7 +57,6 @@ const getSessionByKerala = async ()=>{
     console.log("return the data")
     return slotKerala;
 }
-checkAvailability();
 //loging in to the bot
 client.login(process.env.DISCORD_BOT_TOKEN)
 

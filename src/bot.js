@@ -24,7 +24,7 @@ botMentionId = '<@!843371650959409202> ';
 client.on('ready',()=>{
     console.log(`${client.user.tag}`);
     // structure to run fun in every hour 0 * * * *
-    let notifyJob = new cronJob(' 0 * * * *',()=>{
+    let notifyJob = new cronJob('59 * * * *',()=>{
         checkAvailability();
     })
 
@@ -79,10 +79,10 @@ client.on('message',(message)=>{
         );
     }
     //handling the hello and the hai message
-    if(['hai','hello'].includes(message.content.toLowerCase())){
+    if(['hi','hello'].includes(message.content.toLowerCase())){
 
         message.channel.send(
-            message.content.toLowerCase() === 'hai'?'hello':'hai'
+            message.content.toLowerCase() === 'hi'?'Hello':'Hai'
         );
     }
     //This handles all the commands
