@@ -102,7 +102,7 @@ const getSessionByPinForWeek = async (pincode = 110001)=>{
 
     } catch (err){
 
-        console.log(err);
+        console.log("P-W\n",err);
     }
 };
 
@@ -122,7 +122,7 @@ const getSessionByDistrictForWeek= async (districtName)=>{
 
     } catch (err){
 
-        console.log(err);
+        console.log("D-W\n",err);
     }
 };
 
