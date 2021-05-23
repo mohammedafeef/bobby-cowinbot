@@ -24,7 +24,7 @@ botMentionId = '<@!843371650959409202> ';
 client.on('ready',()=>{
     console.log(`${client.user.tag}`);
     // structure to run fun in every hour 0 * * * *
-    let notifyJob = new cronJob('59 * * * *',()=>{
+    let notifyJob = new cronJob('0 * * * *',()=>{
         checkAvailability();
     })
 

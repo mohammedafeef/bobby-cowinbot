@@ -6,10 +6,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 //To all users data from db and the slot checking function
 const checkAvailability = async ()=>{
-    console.log("lam in");
     const usersData = await findAll();
     const slotKerala = await getSessionByKerala();
-    console.log(slotKerala);
     usersData.forEach((user)=>{
         if(user.notify_state && user.district && user.age){
             let userDistSlot = slotKerala.find((data)=>data.district.toLowerCase() === user.district.toLowerCase());
@@ -45,7 +43,7 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
 }
 //To the slot availability in all districts of kerala
 const getSessionByKerala = async ()=>{
-    console.log("started the work");
+    //To resole the array of promises
     let slotKerala = await Promise.all(districtId.map(async (district)=>{
         let sessions = await getSessionByDistrictForWeek(district.district_name);
         return ({
@@ -54,7 +52,6 @@ const getSessionByKerala = async ()=>{
 
         })
     }))
-    console.log("return the data")
     return slotKerala;
 }
 //loging in to the bot
