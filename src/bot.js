@@ -66,7 +66,7 @@ client.on('message',(message)=>{
     //return if the message from the bot it self
     if(message.author.bot)return;
     //check for bot mentioned message
-    if(message.mentions.has(client.user.id)){
+    if(message.mentions.has(client.user.id) && message.channel.type === 'dm' && message.guild === null){
         user.findUser(message.author.id)
         .then(
             (data)=>{
@@ -79,14 +79,14 @@ client.on('message',(message)=>{
         );
     }
     //handling the hello and the hai message
-    if(['hi','hello'].includes(message.content.toLowerCase())){
+    if(['hi','hello'].includes(message.content.toLowerCase()) && message.channel.type === 'dm' && message.guild === null){
 
         message.channel.send(
             message.content.toLowerCase() === 'hi'?'Hello':'Hai'
         );
     }
     //This handles all the commands
-    else if(message.content.startsWith(PREFIX)){
+    else if(message.content.startsWith(PREFIX) && message.channel.type === 'dm' && message.guild === null){
         const [CMD_NAME, ...args] = message.content
         .toLowerCase()
         .trim()
