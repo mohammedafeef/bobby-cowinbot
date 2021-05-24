@@ -32,7 +32,7 @@ const checkSlotByDistrict = async (id,age,district,sessions) =>{
             member.send(`
             There are some slots :smiley:
             :arrow_forward: district : ${district}
-            :arrow_forward: age_group : ${(age)>=45?'45+':(data.age<18)?'miner':'18+'});
+            :arrow_forward: age_group : ${(age)>=45?'45+':(data.age<18)?'miner':'18+'}
             `)
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()

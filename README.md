@@ -30,10 +30,10 @@ Bobby is an cowin discord bot it helps to check the slot in district or pincode 
 4. You disable the notification by notify_off and enable back by the notify_on.
 %. If the notier is on you will get dm from bot if the slot is available.
 ## Libraries used
-mongoose
-discord.js
-node-cron
-nodemon
-axios
+mongoose<br>
+discord.js<br>
+node-cron<br>
+nodemon<br>
+axios<br>
 ## How to configure
  You can add bobby to your discord server by below link

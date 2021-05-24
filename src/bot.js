@@ -80,6 +80,29 @@ client.on('message',(message)=>{
             }
         );
     }
+    //set an message to get the inform about the bot
+    if(message.content.startsWith(PREFIX)){
+        const [cmd_name,...args] = message.content
+        .toLowerCase()
+        .trim()
+        .substring(PREFIX.length)
+        .split(/\s+/);
+        if(cmd_name == 'info'){
+            const infoEmbed = new Discord.MessageEmbed()
+            .setColor('#ffffff')
+            .setDescription(`
+            **Hi:hand_splayed:,
+
+            I am Bobby:smiley: here to help you to find 
+            vacination centers. You can dm me
+            and check $help to know more about 
+            me <@!843371650959409202> waiting to help you:handshake:.**
+
+            **[Add me to your server](https://discord.com/api/oauth2/authorize?client_id=843371650959409202&permissions=3758619712&scope=bot)**
+            `)
+            message.channel.send(infoEmbed);
+        }
+    }
     //handling the hello and the hai message
     if(['hi','hello'].includes(message.content.toLowerCase()) && message.channel.type === 'dm' && message.guild === null){
 
