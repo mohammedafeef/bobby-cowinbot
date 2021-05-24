@@ -12,6 +12,7 @@ https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b
 ## How it Works ?
 1. Works under a set of commands bot will list all them if you dm with $help.<br>
         :mobile_phone: **Commads to interact with boby**<br>
+                :loudspeaker:  ${PREFIX}info : About bot<br>
                 :loudspeaker:  ${PREFIX}profile : show your data<br>
             **To update the data**<br>
                 :loudspeaker:  ${PREFIX}district : update the district <br>
@@ -36,4 +37,5 @@ node-cron<br>
 nodemon<br>
 axios<br>
 ## How to configure
- You can add bobby to your discord server by below link
+ You can add bobby to your discord server by below link<br>
+ https://discord.com/api/oauth2/authorize?client_id=843371650959409202&permissions=3758619712&scope=bot
