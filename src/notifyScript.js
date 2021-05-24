@@ -12,7 +12,6 @@ const checkAvailability = async ()=>{
         if(user.notify_state && user.district && user.age){
             let userDistSlot = slotKerala.find((data)=>data.district.toLowerCase() === user.district.toLowerCase());
             checkSlotByDistrict(user.user_id,user.age,userDistSlot.slot);
-            await delay(100);
         }
     })
 }
@@ -40,6 +39,7 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
             member.send(exampleEmbed);
         }
     }
+    await delay(100)
 
 }
 //To set an delay between to message
