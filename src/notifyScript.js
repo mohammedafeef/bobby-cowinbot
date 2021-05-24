@@ -11,12 +11,12 @@ const checkAvailability = async ()=>{
     usersData.forEach((user)=>{
         if(user.notify_state && user.district && user.age){
             let userDistSlot = slotKerala.find((data)=>data.district.toLowerCase() === user.district.toLowerCase());
-            checkSlotByDistrict(user.user_id,user.age,userDistSlot.slot);
+            checkSlotByDistrict(user.user_id,user.age,user.district,userDistSlot.slot);
         }
     })
 }
 //check slot in given district
-const checkSlotByDistrict = async (id,age,sessions) =>{
+const checkSlotByDistrict = async (id,age,district,sessions) =>{
     //fetch users data from the discord api
     let member = await client.users.fetch(id);
     //checks if slot are available or not
@@ -29,7 +29,11 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
             }
         });
         if(slots.length){
-            member.send('There are some slots :smiley:\n')
+            member.send(`
+            There are some slots :smiley:
+            :arrow_forward: district : ${district}
+            :arrow_forward: age_group : ${(age)>=45?'45+':(data.age<18)?'miner':'18+'});
+            `)
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()
             .setTitle('Register for Vacination')
