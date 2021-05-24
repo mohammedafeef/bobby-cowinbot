@@ -11,20 +11,20 @@ Bobby is an cowin discord bot it helps to check the slot in district or pincode 
 ![BOBBY DEMO]()
 ## How it Works ?
 1. Works under a set of commands bot will list all them if you dm with $help.
-    response :mobile_phone: **Commads to interact with boby**
-                :loudspeaker:  ${PREFIX}profile : show your data
-            **To update the data**
-                :loudspeaker:  ${PREFIX}district : update the district 
-                :loudspeaker:  ${PREFIX}age : update the age 
-                :loudspeaker:  ${PREFIX}pin : update the pincode
-                :loudspeaker:  ${PREFIX}set_all : update above all in one go
-            **To check the slot**
-                :loudspeaker:  ${PREFIX}slot_district : slots in district 
-                :loudspeaker:  ${PREFIX}slot_pin : slots in pincode
-            **To change notification state**
-                :loudspeaker:  ${PREFIX}notify_on : enable hourly slot notifier
-                :loudspeaker:  ${PREFIX}notify_off : disable hourly slot notifier
-            Must use **${PREFIX}** as command prefix
+        :mobile_phone: **Commads to interact with boby**<br>
+                :loudspeaker:  ${PREFIX}profile : show your data<br>
+            **To update the data**<br>
+                :loudspeaker:  ${PREFIX}district : update the district <br>
+                :loudspeaker:  ${PREFIX}age : update the age <br>
+                :loudspeaker:  ${PREFIX}pin : update the pincode <br>
+                :loudspeaker:  ${PREFIX}set_all : update above all in one go<br>
+            **To check the slot**<br>
+                :loudspeaker:  ${PREFIX}slot_district : slots in district <br>
+                :loudspeaker:  ${PREFIX}slot_pin : slots in pincode<br>
+            **To change notification state**<br>
+                :loudspeaker:  ${PREFIX}notify_on : enable hourly slot notifier<br>
+                :loudspeaker:  ${PREFIX}notify_off : disable hourly slot notifier<br>
+            Must use **${PREFIX}** as command prefix<br>
 2. You can update your details like age ,district ,pincode by respected command in above list.
 3. After updating the details you will be able to check the slot by $slot_dist and $slot_pin.
 4. You disable the notification by notify_off and enable back by the notify_on.
