@@ -12,6 +12,7 @@ const checkAvailability = async ()=>{
         if(user.notify_state && user.district && user.age){
             let userDistSlot = slotKerala.find((data)=>data.district.toLowerCase() === user.district.toLowerCase());
             checkSlotByDistrict(user.user_id,user.age,userDistSlot.slot);
+            await delay(100);
         }
     })
 }
@@ -28,7 +29,7 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
                 slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${spot.available_capacity}**\n`)
             }
         });
-        if(slots.length && !member.bot){
+        if(slots.length){
             member.send('There are some slots :smiley:\n')
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()
@@ -41,6 +42,8 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
     }
 
 }
+//To set an delay between to message
+const delay = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 //To the slot availability in all districts of kerala
 const getSessionByKerala = async ()=>{
     //To resole the array of promises
