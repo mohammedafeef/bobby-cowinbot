@@ -122,7 +122,8 @@ client.on('message',(message)=>{
             //Give an idea about each command
             message.channel.send(`
             :mobile_phone: **Commads to interact with boby**
-                :loudspeaker:  ${PREFIX}profile : show your data
+                :loudspeaker: ${PREFIX}info : about me
+                :loudspeaker:  ${PREFIX}profile : show your profile
             **To update the data**
                 :loudspeaker:  ${PREFIX}district : update the district 
                 :loudspeaker:  ${PREFIX}age : update the age 
