@@ -154,7 +154,7 @@ client.on('message',(message)=>{
                     **Age**    Not updated
                     **Pincode** Not updated
                     **District** Not updated
-                    **notify_state** on
+                    **Notifier** On
                     `)
                 }else{
                     message.channel.send(`
@@ -163,7 +163,7 @@ client.on('message',(message)=>{
                     **Age**     ${data.age?data.age:'Not updated'}
                     **Pincode**  ${data.pincode?data.pincode:'Not updated'}
                     **District** ${data.district?data.district:'Not updated'}
-                    **Notier** ${data.notify_state?'on':'off'}
+                    **Notifier** ${data.notify_state?'on':'off'}
                     `)
                 }
             })
