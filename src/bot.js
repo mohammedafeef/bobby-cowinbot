@@ -12,9 +12,9 @@ const user = require('./db/Channels');
 //importing notify script 
 const { checkAvailability } = require('./notifyScript');
 
+//To import district id array
 const {districtId} = require('./cowinApi/districtId');
-// to filter the message
-let filter = m => m.author.id === message.author.id;
+
 //job scheduler script
 const cronJob = require('cron').CronJob;
 //cowin api request handler module
@@ -103,7 +103,7 @@ client.on('message',(message)=>{
             **To update the data**
                 :loudspeaker:  ${PREFIX}district : update the district 
                 :loudspeaker:  ${PREFIX}age : update the age 
-                :loudspeaker:  ${PREFIX}pin : update the pincode
+                :loudspeaker:  ${PREFIX}pincode : update the pincode
                 :loudspeaker:  ${PREFIX}set_all : update above all in one go
             **To check the slot**
                 :loudspeaker:  ${PREFIX}slot_district : slots in district 

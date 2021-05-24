@@ -28,7 +28,7 @@ const checkSlotByDistrict = async (id,age,sessions) =>{
                 slots = slots.concat(` :hospital: ${center.name}(${center.pincode})   :syringe: **${spot.available_capacity}**\n`)
             }
         });
-        if(slots.length){
+        if(slots.length && !member.bot){
             member.send('There are some slots :smiley:\n')
             member.send(slots);
             const exampleEmbed = new Discord.MessageEmbed()
