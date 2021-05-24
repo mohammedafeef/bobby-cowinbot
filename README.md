@@ -8,7 +8,7 @@ Bobby is an cowin discord bot it helps to check the slot in district or pincode 
 ## Team Id
  BFH/rec6W2gchSVW5doqJ/2021
 ## Link to product walkthrough
-![BOBBY DEMO](https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b)
+https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b
 ## How it Works ?
 1. Works under a set of commands bot will list all them if you dm with $help.<br>
         :mobile_phone: **Commads to interact with boby**<br>
