@@ -26,7 +26,7 @@ botMentionId = '<@!843371650959409202> ';
 client.on('ready',()=>{
     console.log(`${client.user.tag}`);
     // structure to run fun in every hour 0 * * * *
-    let notifyJob = new cronJob('0 * * * *',()=>{
+    let notifyJob = new cronJob('0,30 * * * *',()=>{
         checkAvailability();
     })
 
@@ -37,6 +37,7 @@ client.on('ready',()=>{
 client.on('guildMemberAdd',member =>{
     user.findUser(member.id)
     .then((data)=>{
+        if(member.user.bot)return;
         if(data){
             member.send(`Hi <@${data.user_id}>,glad to meet you here again`)
         }else{
