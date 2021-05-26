@@ -40,7 +40,6 @@ https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b
 mongoose<br>
 discord.js<br>
 node-cron<br>
-nodemon<br>
 axios<br>
 ## How to configure
  You can add bobby to your discord server by below link<br>
