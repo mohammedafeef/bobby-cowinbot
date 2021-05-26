@@ -1,7 +1,10 @@
 ![BFH Banner](https://trello-attachments.s3.amazonaws.com/542e9c6316504d5797afbfb9/542e9c6316504d5797afbfc1/39dee8d993841943b5723510ce663233/Frame_19.png)
 <br>
-[![node](./badges/node.svg)](https://badges.aleen42.com/src/node.svg)
- [![npm](./badges/npm.svg)](https://badges.aleen42.com/src/npm.svg)
+[![node](https://badges.aleen42.com/src/node.svg)](https://nodejs.org/en/docs/)
+[![npm](https://badges.aleen42.com/src/npm.svg)](https://www.npmjs.com/)
+[![instagram](https://badges.aleen42.com/src/instagram.svg)](https://www.instagram.com/afeef._.maf/)
+[![youtube](https://badges.aleen42.com/src/youtube.svg)](https://www.youtube.com/channel/UCSw6My2K1thRUnINark9J1Q)
+
 # Bobby
 Bobby is an cowin discord bot it helps to check the slot in district or pincode and it will inform you about the slot availability on hourly basis.
 ## Team members
