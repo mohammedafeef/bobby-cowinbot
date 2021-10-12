@@ -8,9 +8,9 @@
 # Bobby
 Bobby is an cowin discord bot it helps to check the slot in district or pincode and it will inform you about the slot availability on hourly basis.
 ## Team members
-1. Afeef (https://github.com/MOHAMMEDAFEEF)
-2. Fahmin (https://github.com/muhammadfahmin)
-3. Nahyan (https://github.com/nahyansharvin)
+1. [Afeef](https://github.com/MOHAMMEDAFEEF)
+2. [Fahmin](https://github.com/muhammadfahmin)
+3. [Nahyan](https://github.com/nahyansharvin)
 ## Team Id
  BFH/rec6W2gchSVW5doqJ/2021
 ## Link to product walkthrough
