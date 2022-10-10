@@ -7,14 +7,10 @@
 
 # Bobby
 Bobby is an cowin discord bot it helps to check the slot in district or pincode and it will inform you about the slot availability on hourly basis.
-## Team members
-1. [Afeef](https://github.com/MOHAMMEDAFEEF)
-2. [Fahmin](https://github.com/muhammadfahmin)
-3. [Nahyan](https://github.com/nahyansharvin)
-## Team Id
- BFH/rec6W2gchSVW5doqJ/2021
+
 ## Link to product walkthrough
 https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b
+
 ## How it Works ?
 1. Works under a set of commands bot will list all them if you dm with $help.<br>
         :mobile_phone: **Commads to interact with boby**<br>
@@ -37,10 +33,11 @@ https://www.loom.com/share/ce95607a0317449b818eb00f12d8517b
 4. You disable the notification by notify_off and enable back by the notify_on.
 %. If the notier is on you will get dm from bot if the slot is available.
 ## Libraries used
-mongoose<br>
-discord.js<br>
-node-cron<br>
-axios<br>
+- mongoose
+- discord.js
+- node-cron
+- axios
+
 ## How to configure
  You can add bobby to your discord server by below link<br>
  https://discord.com/api/oauth2/authorize?client_id=843371650959409202&permissions=3758619712&scope=bot
